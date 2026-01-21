@@ -3,6 +3,55 @@ const panels = Array.from(document.querySelectorAll(".game-panel"));
 const audioToggle = document.getElementById("audioToggle");
 
 let audioEnabled = true;
+const POINTS_PER_WIN = 10;
+const COIN_VALUE = 100;
+const SCORE_KEY = "trainmychild-total-points";
+const scoreDisplays = {
+  points: Array.from(document.querySelectorAll("[data-score='points']")),
+  coins: Array.from(document.querySelectorAll("[data-score='coins']")),
+  nextCoin: Array.from(document.querySelectorAll("[data-score='next-coin']")),
+};
+let totalPoints = 0;
+
+const loadScores = () => {
+  if (!("localStorage" in window)) {
+    return;
+  }
+  const stored = window.localStorage.getItem(SCORE_KEY);
+  const parsed = Number.parseInt(stored, 10);
+  if (!Number.isNaN(parsed)) {
+    totalPoints = parsed;
+  }
+};
+
+const saveScores = () => {
+  if (!("localStorage" in window)) {
+    return;
+  }
+  window.localStorage.setItem(SCORE_KEY, String(totalPoints));
+};
+
+const updateScoreDisplays = () => {
+  const coins = Math.floor(totalPoints / COIN_VALUE);
+  const remainder = totalPoints % COIN_VALUE;
+  const nextCoin = remainder === 0 ? COIN_VALUE : COIN_VALUE - remainder;
+
+  scoreDisplays.points.forEach((el) => {
+    el.textContent = totalPoints;
+  });
+  scoreDisplays.coins.forEach((el) => {
+    el.textContent = coins;
+  });
+  scoreDisplays.nextCoin.forEach((el) => {
+    el.textContent = nextCoin;
+  });
+};
+
+const addPoints = (amount) => {
+  totalPoints += amount;
+  saveScores();
+  updateScoreDisplays();
+};
 
 const speak = (text) => {
   if (!audioEnabled || !("speechSynthesis" in window)) {
@@ -76,9 +125,15 @@ const phonicsItems = [
 ];
 
 let currentPhonics = phonicsItems[0];
+let phonicsAwarded = false;
+let phonicsWrong = 0;
+let phonicsLocked = false;
 
 const buildPhonicsRound = () => {
   currentPhonics = phonicsItems[Math.floor(Math.random() * phonicsItems.length)];
+  phonicsAwarded = false;
+  phonicsWrong = 0;
+  phonicsLocked = false;
   const optionLetters = shuffle(
     Array.from(
       new Set([
@@ -103,18 +158,43 @@ const buildPhonicsRound = () => {
     button.className = "option";
     button.textContent = letter;
     button.addEventListener("click", () => {
+      if (phonicsLocked) {
+        return;
+      }
       if (letter === currentPhonics.letter) {
+        const earned = !phonicsAwarded;
+        if (earned) {
+          addPoints(POINTS_PER_WIN);
+          phonicsAwarded = true;
+        }
+        phonicsLocked = true;
         setFeedback(
           phonicsFeedback,
-          `Great job! ${currentPhonics.letter} is for ${currentPhonics.example}.`,
+          `Great job! ${currentPhonics.letter} is for ${currentPhonics.example}.${
+            earned ? " +10 points!" : ""
+          }`,
           "good"
         );
         speak(
           `Great job! ${currentPhonics.letter} is for ${currentPhonics.example}.`
         );
+        setTimeout(() => {
+          buildPhonicsRound();
+          speak(`Find the letter that makes the ${currentPhonics.sound} sound.`);
+        }, 900);
       } else {
-        setFeedback(phonicsFeedback, "Try again. Listen for the sound.", "try");
-        speak("Try again.");
+        phonicsWrong += 1;
+        if (phonicsWrong >= 2) {
+          setFeedback(
+            phonicsFeedback,
+            `Try again. Hint: it's ${currentPhonics.letter}.`,
+            "try"
+          );
+          speak(`Hint. It's the letter ${currentPhonics.letter}.`);
+        } else {
+          setFeedback(phonicsFeedback, "Try again. Listen for the sound.", "try");
+          speak("Try again.");
+        }
       }
     });
     phonicsOptions.appendChild(button);
@@ -140,9 +220,15 @@ const numbersNew = document.getElementById("numbersNew");
 const numbersListen = document.getElementById("numbersListen");
 
 let currentNumber = 1;
+let numbersAwarded = false;
+let numbersWrong = 0;
+let numbersLocked = false;
 
 const buildNumbersRound = () => {
   currentNumber = Math.floor(Math.random() * 10) + 1;
+  numbersAwarded = false;
+  numbersWrong = 0;
+  numbersLocked = false;
   numbersTrack.innerHTML = "";
   for (let i = 0; i < currentNumber; i += 1) {
     const car = document.createElement("div");
@@ -163,12 +249,39 @@ const buildNumbersRound = () => {
     button.className = "option";
     button.textContent = value;
     button.addEventListener("click", () => {
+      if (numbersLocked) {
+        return;
+      }
       if (value === currentNumber) {
-        setFeedback(numbersFeedback, `Yes! There are ${currentNumber}.`, "good");
+        const earned = !numbersAwarded;
+        if (earned) {
+          addPoints(POINTS_PER_WIN);
+          numbersAwarded = true;
+        }
+        numbersLocked = true;
+        setFeedback(
+          numbersFeedback,
+          `Yes! There are ${currentNumber}.${earned ? " +10 points!" : ""}`,
+          "good"
+        );
         speak(`Yes! There are ${currentNumber}.`);
+        setTimeout(() => {
+          buildNumbersRound();
+          speak("Count the train cars. How many?");
+        }, 900);
       } else {
-        setFeedback(numbersFeedback, "Not quite. Count again.", "try");
-        speak("Not quite. Count again.");
+        numbersWrong += 1;
+        if (numbersWrong >= 2) {
+          setFeedback(
+            numbersFeedback,
+            `Not quite. Hint: it's ${currentNumber}.`,
+            "try"
+          );
+          speak(`Hint. The answer is ${currentNumber}.`);
+        } else {
+          setFeedback(numbersFeedback, "Not quite. Count again.", "try");
+          speak("Not quite. Count again.");
+        }
       }
     });
     numbersOptions.appendChild(button);
@@ -203,9 +316,15 @@ const shapes = [
 ];
 
 let currentShape = shapes[0];
+let shapesAwarded = false;
+let shapesWrong = 0;
+let shapesLocked = false;
 
 const buildShapesRound = () => {
   currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+  shapesAwarded = false;
+  shapesWrong = 0;
+  shapesLocked = false;
   shapeTarget.className = "shape big";
   shapeTarget.classList.add(currentShape.id);
   shapeTarget.style.background = currentShape.color;
@@ -234,12 +353,39 @@ const buildShapesRound = () => {
     shapeEl.style.background = shape.color;
     button.appendChild(shapeEl);
     button.addEventListener("click", () => {
+      if (shapesLocked) {
+        return;
+      }
       if (shape.id === currentShape.id) {
-        setFeedback(shapeFeedback, `You found the ${shape.label}!`, "good");
+        const earned = !shapesAwarded;
+        if (earned) {
+          addPoints(POINTS_PER_WIN);
+          shapesAwarded = true;
+        }
+        shapesLocked = true;
+        setFeedback(
+          shapeFeedback,
+          `You found the ${shape.label}!${earned ? " +10 points!" : ""}`,
+          "good"
+        );
         speak(`You found the ${shape.label}.`);
+        setTimeout(() => {
+          buildShapesRound();
+          speak(`Find the ${currentShape.label}.`);
+        }, 900);
       } else {
-        setFeedback(shapeFeedback, "Try a different shape.", "try");
-        speak("Try a different shape.");
+        shapesWrong += 1;
+        if (shapesWrong >= 2) {
+          setFeedback(
+            shapeFeedback,
+            `Try again. Hint: it's a ${currentShape.label}.`,
+            "try"
+          );
+          speak(`Hint. It's a ${currentShape.label}.`);
+        } else {
+          setFeedback(shapeFeedback, "Try a different shape.", "try");
+          speak("Try a different shape.");
+        }
       }
     });
     shapeOptions.appendChild(button);
@@ -275,9 +421,15 @@ const colors = [
 ];
 
 let currentColor = colors[0];
+let colorsAwarded = false;
+let colorsWrong = 0;
+let colorsLocked = false;
 
 const buildColorsRound = () => {
   currentColor = colors[Math.floor(Math.random() * colors.length)];
+  colorsAwarded = false;
+  colorsWrong = 0;
+  colorsLocked = false;
   colorTarget.style.background = currentColor.value;
 
   const options = shuffle([
@@ -307,12 +459,39 @@ const buildColorsRound = () => {
     button.appendChild(swatch);
     button.appendChild(label);
     button.addEventListener("click", () => {
+      if (colorsLocked) {
+        return;
+      }
       if (color.name === currentColor.name) {
-        setFeedback(colorFeedback, `Yes! That's ${currentColor.name}.`, "good");
+        const earned = !colorsAwarded;
+        if (earned) {
+          addPoints(POINTS_PER_WIN);
+          colorsAwarded = true;
+        }
+        colorsLocked = true;
+        setFeedback(
+          colorFeedback,
+          `Yes! That's ${currentColor.name}.${earned ? " +10 points!" : ""}`,
+          "good"
+        );
         speak(`Yes! That's ${currentColor.name}.`);
+        setTimeout(() => {
+          buildColorsRound();
+          speak(`Find the color ${currentColor.name}.`);
+        }, 900);
       } else {
-        setFeedback(colorFeedback, "Try another color.", "try");
-        speak("Try another color.");
+        colorsWrong += 1;
+        if (colorsWrong >= 2) {
+          setFeedback(
+            colorFeedback,
+            `Try again. Hint: it's ${currentColor.name}.`,
+            "try"
+          );
+          speak(`Hint. It's ${currentColor.name}.`);
+        } else {
+          setFeedback(colorFeedback, "Try another color.", "try");
+          speak("Try another color.");
+        }
       }
     });
     colorOptions.appendChild(button);
@@ -344,6 +523,8 @@ let drawing = false;
 let lastPoint = null;
 let ctx = null;
 let deviceRatio = window.devicePixelRatio || 1;
+let handwritingHasInk = false;
+let handwritingAwarded = false;
 
 const resizeCanvas = () => {
   if (!handwritingCanvas) {
@@ -401,17 +582,30 @@ const drawLine = (event) => {
   ctx.moveTo(lastPoint.x, lastPoint.y);
   ctx.lineTo(point.x, point.y);
   ctx.stroke();
+  handwritingHasInk = true;
   lastPoint = point;
 };
 
 const stopDrawing = () => {
   drawing = false;
   lastPoint = null;
+  if (handwritingHasInk && !handwritingAwarded) {
+    addPoints(POINTS_PER_WIN);
+    handwritingAwarded = true;
+    setFeedback(handwritingFeedback, "Brilliant tracing! +10 points!", "good");
+    speak("Brilliant tracing!");
+    setTimeout(() => {
+      buildHandwritingRound();
+      speak(`Trace the ${currentTrace}.`);
+    }, 900);
+  }
 };
 
 const buildHandwritingRound = () => {
   currentTrace = handwritingItems[Math.floor(Math.random() * handwritingItems.length)];
   handwritingTarget.textContent = currentTrace;
+  handwritingHasInk = false;
+  handwritingAwarded = false;
   drawGuide();
   setFeedback(handwritingFeedback, "Trace slowly and stay on the guide!", "");
 };
@@ -422,6 +616,8 @@ handwritingNew.addEventListener("click", () => {
 });
 
 handwritingClear.addEventListener("click", () => {
+  handwritingHasInk = false;
+  handwritingAwarded = false;
   drawGuide();
   setFeedback(handwritingFeedback, "Canvas cleared. Try again!", "");
 });
@@ -447,6 +643,8 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+loadScores();
+updateScoreDisplays();
 buildPhonicsRound();
 buildNumbersRound();
 buildShapesRound();

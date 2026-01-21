@@ -24,6 +24,16 @@
             <span class="brand-icon">🚂</span>
             <span>Trainmychild</span>
           </div>
+          <div class="score-badges">
+            <div class="score-pill">
+              <span>Points</span>
+              <strong data-score="points">0</strong>
+            </div>
+            <div class="score-pill">
+              <span>Coins</span>
+              <strong data-score="coins">0</strong>
+            </div>
+          </div>
           <button id="audioToggle" class="audio-toggle" aria-pressed="true">
             Audio: On
           </button>
@@ -51,6 +61,9 @@
         <button class="tab" data-game="handwriting" role="tab" aria-selected="false">
           ✍️ Handwriting
         </button>
+        <button class="tab" data-game="profile" role="tab" aria-selected="false">
+          🧒 Profile
+        </button>
       </nav>
 
       <section class="game-panel active" data-game="phonics" role="tabpanel">
@@ -60,6 +73,16 @@
             <p>Listen for the sound, then tap the letter.</p>
           </div>
           <button class="secondary" id="phonicsNew">New sound</button>
+        </div>
+        <div class="panel-score">
+          <div class="score-pill small">
+            <span>Points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="score-pill small">
+            <span>Coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
         </div>
         <div class="sound-bubble" id="phonicsSound">/sss/</div>
         <div class="options" id="phonicsOptions"></div>
@@ -77,6 +100,16 @@
           </div>
           <button class="secondary" id="numbersNew">New set</button>
         </div>
+        <div class="panel-score">
+          <div class="score-pill small">
+            <span>Points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="score-pill small">
+            <span>Coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
+        </div>
         <div class="train-track" id="numbersTrack"></div>
         <div class="options" id="numbersOptions"></div>
         <div class="feedback" id="numbersFeedback"></div>
@@ -92,6 +125,16 @@
             <p>Match the shape name to the big shape.</p>
           </div>
           <button class="secondary" id="shapesNew">New shape</button>
+        </div>
+        <div class="panel-score">
+          <div class="score-pill small">
+            <span>Points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="score-pill small">
+            <span>Coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
         </div>
         <div class="shape-stage">
           <div class="shape big" id="shapeTarget"></div>
@@ -111,6 +154,16 @@
           </div>
           <button class="secondary" id="colorsNew">New color</button>
         </div>
+        <div class="panel-score">
+          <div class="score-pill small">
+            <span>Points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="score-pill small">
+            <span>Coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
+        </div>
         <div class="color-stage">
           <div class="color-car" id="colorTarget"></div>
         </div>
@@ -129,6 +182,16 @@
           </div>
           <button class="secondary" id="handwritingNew">New trace</button>
         </div>
+        <div class="panel-score">
+          <div class="score-pill small">
+            <span>Points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="score-pill small">
+            <span>Coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
+        </div>
         <div class="handwriting-stage">
           <div class="trace-info">
             <div class="trace-prompt">
@@ -142,6 +205,29 @@
           <canvas id="handwritingCanvas" aria-label="Handwriting practice"></canvas>
         </div>
         <div class="feedback" id="handwritingFeedback"></div>
+      </section>
+
+      <section class="game-panel" data-game="profile" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Your profile</h2>
+            <p>Total points and coins earned in Trainmychild.</p>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-stat">
+            <span>Total points</span>
+            <strong data-score="points">0</strong>
+          </div>
+          <div class="profile-stat">
+            <span>Total coins</span>
+            <strong data-score="coins">0</strong>
+          </div>
+          <div class="profile-stat">
+            <span>Next coin in</span>
+            <strong data-score="next-coin">100</strong>
+          </div>
+        </div>
       </section>
     </main>
   </body>
