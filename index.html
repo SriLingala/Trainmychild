@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trainmychild</title>
+    <meta name="theme-color" content="#ff7a1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="icon" href="icon-512.png" type="image/png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="confetti confetti-left"></div>
+    <div class="confetti confetti-right"></div>
+
+    <main class="shell">
+      <header class="hero">
+        <div class="hero-top">
+          <div class="brand">
+            <span class="brand-icon">🚂</span>
+            <span>Trainmychild</span>
+          </div>
+          <button id="audioToggle" class="audio-toggle" aria-pressed="true">
+            Audio: On
+          </button>
+        </div>
+        <h1>Play + learn in tiny bursts</h1>
+        <p>
+          Phonics, numbers, shapes, colors, and handwriting — all in short
+          mini-games made for Reception learners.
+        </p>
+      </header>
+
+      <nav class="game-tabs" role="tablist" aria-label="Mini games">
+        <button class="tab active" data-game="phonics" role="tab" aria-selected="true">
+          🔤 Phonics
+        </button>
+        <button class="tab" data-game="numbers" role="tab" aria-selected="false">
+          🔢 Numbers
+        </button>
+        <button class="tab" data-game="shapes" role="tab" aria-selected="false">
+          🔷 Shapes
+        </button>
+        <button class="tab" data-game="colors" role="tab" aria-selected="false">
+          🎨 Colors
+        </button>
+        <button class="tab" data-game="handwriting" role="tab" aria-selected="false">
+          ✍️ Handwriting
+        </button>
+      </nav>
+
+      <section class="game-panel active" data-game="phonics" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Phonics</h2>
+            <p>Listen for the sound, then tap the letter.</p>
+          </div>
+          <button class="secondary" id="phonicsNew">New sound</button>
+        </div>
+        <div class="sound-bubble" id="phonicsSound">/sss/</div>
+        <div class="options" id="phonicsOptions"></div>
+        <div class="feedback" id="phonicsFeedback"></div>
+        <div class="panel-actions">
+          <button class="primary" id="phonicsListen">Listen</button>
+        </div>
+      </section>
+
+      <section class="game-panel" data-game="numbers" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Numbers</h2>
+            <p>Count the train cars and choose the number.</p>
+          </div>
+          <button class="secondary" id="numbersNew">New set</button>
+        </div>
+        <div class="train-track" id="numbersTrack"></div>
+        <div class="options" id="numbersOptions"></div>
+        <div class="feedback" id="numbersFeedback"></div>
+        <div class="panel-actions">
+          <button class="primary" id="numbersListen">Listen</button>
+        </div>
+      </section>
+
+      <section class="game-panel" data-game="shapes" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Shapes</h2>
+            <p>Match the shape name to the big shape.</p>
+          </div>
+          <button class="secondary" id="shapesNew">New shape</button>
+        </div>
+        <div class="shape-stage">
+          <div class="shape big" id="shapeTarget"></div>
+        </div>
+        <div class="options shapes" id="shapeOptions"></div>
+        <div class="feedback" id="shapeFeedback"></div>
+        <div class="panel-actions">
+          <button class="primary" id="shapesListen">Listen</button>
+        </div>
+      </section>
+
+      <section class="game-panel" data-game="colors" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Colors</h2>
+            <p>Pick the color that matches the train.</p>
+          </div>
+          <button class="secondary" id="colorsNew">New color</button>
+        </div>
+        <div class="color-stage">
+          <div class="color-car" id="colorTarget"></div>
+        </div>
+        <div class="options colors" id="colorOptions"></div>
+        <div class="feedback" id="colorFeedback"></div>
+        <div class="panel-actions">
+          <button class="primary" id="colorsListen">Listen</button>
+        </div>
+      </section>
+
+      <section class="game-panel" data-game="handwriting" role="tabpanel">
+        <div class="panel-head">
+          <div>
+            <h2>Handwriting</h2>
+            <p>Trace the big letter or number with your finger.</p>
+          </div>
+          <button class="secondary" id="handwritingNew">New trace</button>
+        </div>
+        <div class="handwriting-stage">
+          <div class="trace-info">
+            <div class="trace-prompt">
+              Trace: <span id="handwritingTarget">A</span>
+            </div>
+            <div class="trace-actions">
+              <button class="secondary" id="handwritingListen">Listen</button>
+              <button class="secondary" id="handwritingClear">Clear</button>
+            </div>
+          </div>
+          <canvas id="handwritingCanvas" aria-label="Handwriting practice"></canvas>
+        </div>
+        <div class="feedback" id="handwritingFeedback"></div>
+      </section>
+    </main>
+  </body>
+</html>
