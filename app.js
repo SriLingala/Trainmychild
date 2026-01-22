@@ -4,7 +4,8 @@ const audioToggle = document.getElementById("audioToggle");
 
 let audioEnabled = true;
 const POINTS_PER_WIN = 10;
-const COIN_VALUE = 100;
+const COIN_VALUE = 1000;
+const MAX_NUMBER = 15;
 const SCORE_KEY = "trainmychild-total-points";
 const scoreDisplays = {
   points: Array.from(document.querySelectorAll("[data-score='points']")),
@@ -122,6 +123,16 @@ const phonicsItems = [
   { letter: "N", sound: "n", example: "nest" },
   { letter: "C", sound: "k", example: "cat" },
   { letter: "E", sound: "e", example: "egg" },
+  { letter: "H", sound: "h", example: "hat" },
+  { letter: "R", sound: "r", example: "rabbit" },
+  { letter: "M", sound: "m", example: "moon" },
+  { letter: "D", sound: "d", example: "drum" },
+  { letter: "G", sound: "g", example: "goat" },
+  { letter: "O", sound: "o", example: "octopus" },
+  { letter: "U", sound: "u", example: "umbrella" },
+  { letter: "L", sound: "l", example: "lion" },
+  { letter: "F", sound: "f", example: "fish" },
+  { letter: "B", sound: "b", example: "ball" },
 ];
 
 let currentPhonics = phonicsItems[0];
@@ -225,7 +236,7 @@ let numbersWrong = 0;
 let numbersLocked = false;
 
 const buildNumbersRound = () => {
-  currentNumber = Math.floor(Math.random() * 10) + 1;
+  currentNumber = Math.floor(Math.random() * MAX_NUMBER) + 1;
   numbersAwarded = false;
   numbersWrong = 0;
   numbersLocked = false;
@@ -239,8 +250,8 @@ const buildNumbersRound = () => {
   const options = shuffle([
     currentNumber,
     Math.max(1, currentNumber - 1),
-    Math.min(10, currentNumber + 1),
-    Math.floor(Math.random() * 10) + 1,
+    Math.min(MAX_NUMBER, currentNumber + 1),
+    Math.floor(Math.random() * MAX_NUMBER) + 1,
   ]).slice(0, 4);
 
   numbersOptions.innerHTML = "";
@@ -313,6 +324,8 @@ const shapes = [
   { id: "star", label: "Star", color: "#ff5fa6" },
   { id: "rectangle", label: "Rectangle", color: "#5ee6b8" },
   { id: "oval", label: "Oval", color: "#c9f2ff" },
+  { id: "heart", label: "Heart", color: "#ff5a5f" },
+  { id: "diamond", label: "Diamond", color: "#9f8bff" },
 ];
 
 let currentShape = shapes[0];
@@ -325,9 +338,7 @@ const buildShapesRound = () => {
   shapesAwarded = false;
   shapesWrong = 0;
   shapesLocked = false;
-  shapeTarget.className = "shape big";
-  shapeTarget.classList.add(currentShape.id);
-  shapeTarget.style.background = currentShape.color;
+  shapeTarget.textContent = currentShape.label;
 
   const options = shuffle([
     currentShape,
@@ -418,6 +429,8 @@ const colors = [
   { name: "Orange", value: "#ff8a3d" },
   { name: "Pink", value: "#ff5fa6" },
   { name: "Purple", value: "#9f8bff" },
+  { name: "Brown", value: "#a9825b" },
+  { name: "Black", value: "#2f2f2f" },
 ];
 
 let currentColor = colors[0];
@@ -517,7 +530,32 @@ const handwritingNew = document.getElementById("handwritingNew");
 const handwritingClear = document.getElementById("handwritingClear");
 const handwritingListen = document.getElementById("handwritingListen");
 
-const handwritingItems = ["A", "B", "C", "S", "T", "P", "1", "2", "3", "4", "5"];
+const handwritingItems = [
+  "A",
+  "B",
+  "C",
+  "S",
+  "T",
+  "P",
+  "I",
+  "N",
+  "M",
+  "D",
+  "G",
+  "O",
+  "R",
+  "H",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "0",
+];
 let currentTrace = handwritingItems[0];
 let drawing = false;
 let lastPoint = null;
