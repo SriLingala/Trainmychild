@@ -3,7 +3,7 @@ const panels = Array.from(document.querySelectorAll(".game-panel"));
 const audioToggle = document.getElementById("audioToggle");
 
 let audioEnabled = true;
-const POINTS_PER_WIN = 10;
+const POINTS_PER_WIN = 1;
 const COIN_VALUE = 1000;
 const MAX_NUMBER = 15;
 const SCORE_KEY = "trainmychild-total-points";
